@@ -30,9 +30,9 @@
     <string name="sp_refresh">重新整理</string>
     <string name="sp_loading">正在載入…</string>
     <string name="sp_load_more">載入更多</string>
-    <string name="sp_inbox_hint">請使用傳送回饋時填寫的電子郵件地址。</string>
+    <string name="sp_inbox_hint">此裝置上儲存的對話。重新整理可查看新回覆。</string>
     <string name="sp_empty">尚無對話</string>
-    <string name="sp_empty_detail">使用此電子郵件地址傳送的訊息會顯示在這裡。</string>
+    <string name="sp_empty_detail">從此裝置傳送的回饋會顯示在這裡。</string>
     <string name="sp_unread">有未讀回覆</string>
     <plurals name="sp_replies"><item quantity="other">%1$s 則回覆</item></plurals>
     <string name="sp_you">你</string>

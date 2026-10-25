@@ -37,7 +37,7 @@ internal class FeedbackViewModel(private val runtime: StorePalRuntime, private v
     var hasMore by mutableStateOf(false); private set
     var loading by mutableStateOf(false); private set
     var inboxError by mutableStateOf<Throwable?>(null); private set
-    var loadedEmail: String? = null; private set
+    var inboxLoaded by mutableStateOf(false); private set
     var token by mutableStateOf<String?>(saved["token"]); private set
     var detail by mutableStateOf<ConversationDetail?>(null); private set
     var detailLoading by mutableStateOf(false); private set
@@ -111,12 +111,14 @@ internal class FeedbackViewModel(private val runtime: StorePalRuntime, private v
     fun submit() {
         if (busy || readingFiles) return
         busy = true; error = null
+        val generation = runtime.historyGeneration.get()
         viewModelScope.launch {
             try {
                 val result = runtime.service.submitFeedback(name, email, category, message, runtime.metadata(), upload(false))
-                runtime.saveIdentity(name, email)
+                if (generation != runtime.historyGeneration.get() || StorePalFeedback.runtime !== runtime) throw CancellationException("Account changed")
+                if (!runtime.saveSubmission(name, email, result.conversationToken, generation)) throw CancellationException("Account changed")
                 files = emptyList(); message(""); partial = result.partialAttachmentFailure; sent = true
-                loadedEmail = null
+                inboxLoaded = false
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) { error = e }
             finally { busy = false }
@@ -125,15 +127,14 @@ internal class FeedbackViewModel(private val runtime: StorePalRuntime, private v
 
     fun loadConversations(reset: Boolean = true) {
         if (loading) return
-        val address = email.trim()
         loading = true; inboxError = null
-        val next = if (reset || loadedEmail != address) 1 else page + 1
-        if (loadedEmail != address) { conversations = emptyList(); hasMore = false; page = 0 }
+        val next = if (reset) 1 else page + 1
         viewModelScope.launch {
             try {
-                val result = runtime.service.listConversations(address, next)
+                val result = runtime.inbox(next)
+                if (StorePalFeedback.runtime !== runtime) throw CancellationException("Account changed")
                 conversations = if (next == 1) result.conversations else (conversations + result.conversations).distinctBy { it.id }
-                loadedEmail = address; page = result.page; hasMore = result.hasMore
+                inboxLoaded = true; page = result.page; hasMore = result.hasMore
             } catch (e: CancellationException) { throw e }
             catch (e: Exception) { inboxError = e }
             finally { loading = false }

@@ -9,6 +9,10 @@ import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.Assume.assumeNotNull
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class StorePalClientTest {
     private lateinit var server: MockWebServer
@@ -143,5 +147,56 @@ class StorePalClientTest {
         val detail = client.getConversation("token")
         assertNull(detail.feedback.metadata)
         assertNull(detail.feedback.attachments)
+    }
+
+    @Test fun `private inbox sends capabilities in body and never marks threads seen`() = runBlocking {
+        val token = "00000000-0000-4000-8000-000000000001"
+        val item = """{"id":"f1","conversation_token":"$token","category":"bug","message":"Private feedback","reply_count":1,"has_unread_reply":true,"created_at":"2026-10-25"}"""
+        json("""{"data":{"conversations":[$item],"total":1,"page":1,"per_page":100},"error":null}""")
+        val result = client.listConversations(listOf(token))
+        assertEquals(1, result.total)
+        assertTrue(result.conversations.single().hasUnreadReply)
+        val request = server.takeRequest()
+        assertEquals("POST", request.method)
+        assertEquals("/api/v1/conversations/lookup", request.path)
+        assertEquals("""{"tokens":["$token"]}""", request.body.readUtf8())
+        assertNull(request.requestUrl!!.query)
+        assertEquals(1, server.requestCount)
+    }
+
+    @Test fun `new inbox batches and caches pages without trusting unrequested tokens`() = runBlocking {
+        val tokens = (1..101).map { java.util.UUID(0, it.toLong()).toString() }
+        fun page(batch: List<String>) = """{"data":{"conversations":[${(batch + "ffffffff-ffff-4fff-8fff-ffffffffffff").joinToString(",") { token ->
+            """{"id":"$token","conversation_token":"$token","category":"bug","message":"Saved","reply_count":1,"has_unread_reply":true,"created_at":"2026-10-25"}"""
+        }}],"total":${batch.size},"page":1,"per_page":100},"error":null}"""
+        tokens.chunked(100).forEach { json(page(it)) }
+        assertEquals(101, client.listConversations(tokens).total)
+        assertEquals(20, client.listConversations(tokens, 2).conversations.size)
+        assertEquals(2, server.requestCount)
+        tokens.chunked(100).forEach { json(page(it)) }
+        assertEquals(101, client.getUnreadCount(tokens))
+        assertEquals(4, server.requestCount)
+    }
+
+    @Test fun `empty private inbox makes no request and failures never fall back to email`() = runBlocking {
+        assertEquals(0, client.listConversations(emptyList()).total)
+        assertEquals(0, server.requestCount)
+        assertFailsWith<IllegalArgumentException> { client.listConversations(listOf("invalid")) }
+        json("""{"data":null,"error":{"code":"NOT_FOUND","message":"Missing"}}""", 404)
+        assertEquals("NOT_FOUND", assertFailsWith<StorePalException> {
+            client.listConversations(listOf("00000000-0000-4000-8000-000000000001"))
+        }.code)
+        assertEquals(1, server.requestCount)
+        assertEquals("/api/v1/conversations/lookup", server.takeRequest().path)
+    }
+
+    @Test fun `hosted capability inbox release verification`() = runBlocking {
+        val path = System.getenv("STOREPAL_LIVE_QA_STATE")
+        assumeNotNull(path)
+        val state = Json.parseToJsonElement(java.io.File(path!!).readText()).jsonObject
+        val live = StorePalClient(state.getValue("app_key").jsonPrimitive.content)
+        val tokens = listOf(state.getValue("conversation_token").jsonPrimitive.content)
+        assertEquals(1, live.listConversations(tokens).total)
+        assertEquals(1, live.getUnreadCount(tokens))
     }
 }

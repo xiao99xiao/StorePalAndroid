@@ -30,9 +30,9 @@
     <string name="sp_refresh">새로고침</string>
     <string name="sp_loading">불러오는 중…</string>
     <string name="sp_load_more">더 보기</string>
-    <string name="sp_inbox_hint">피드백을 보낼 때 입력한 이메일 주소를 사용해 주세요.</string>
+    <string name="sp_inbox_hint">이 기기에 저장된 대화입니다. 새 답변을 확인하려면 새로고침하세요.</string>
     <string name="sp_empty">아직 대화가 없습니다</string>
-    <string name="sp_empty_detail">이 이메일 주소로 보낸 메시지가 여기에 표시됩니다.</string>
+    <string name="sp_empty_detail">이 기기에서 보낸 피드백이 여기에 표시됩니다.</string>
     <string name="sp_unread">읽지 않은 답변</string>
     <plurals name="sp_replies"><item quantity="other">답변 %1$s개</item></plurals>
     <string name="sp_you">나</string>

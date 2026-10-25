@@ -30,9 +30,9 @@
     <string name="sp_refresh">Aktualisieren</string>
     <string name="sp_loading">Wird geladen…</string>
     <string name="sp_load_more">Mehr laden</string>
-    <string name="sp_inbox_hint">Verwende die E-Mail-Adresse, die du beim Senden deines Feedbacks angegeben hast.</string>
+    <string name="sp_inbox_hint">Auf diesem Gerät gespeicherte Gespräche. Aktualisiere die Ansicht, um Antworten zu sehen.</string>
     <string name="sp_empty">Noch keine Nachrichten</string>
-    <string name="sp_empty_detail">Nachrichten, die du mit dieser E-Mail-Adresse sendest, erscheinen hier.</string>
+    <string name="sp_empty_detail">Feedback von diesem Gerät wird hier angezeigt.</string>
     <string name="sp_unread">Ungelesene Antwort</string>
     <plurals name="sp_replies">
         <item quantity="one">%1$s Antwort</item>

@@ -30,9 +30,9 @@
     <string name="sp_refresh">Actualiser</string>
     <string name="sp_loading">Chargement…</string>
     <string name="sp_load_more">Voir la suite</string>
-    <string name="sp_inbox_hint">Utilisez l’adresse e-mail indiquée lors de l’envoi de votre avis.</string>
+    <string name="sp_inbox_hint">Conversations enregistrées sur cet appareil. Actualisez pour voir les réponses.</string>
     <string name="sp_empty">Aucun échange pour le moment</string>
-    <string name="sp_empty_detail">Les messages envoyés avec cette adresse e-mail apparaîtront ici.</string>
+    <string name="sp_empty_detail">Les avis envoyés depuis cet appareil apparaîtront ici.</string>
     <string name="sp_unread">Réponse non lue</string>
     <plurals name="sp_replies">
         <item quantity="one">%1$s réponse</item>

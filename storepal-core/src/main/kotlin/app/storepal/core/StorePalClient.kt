@@ -8,6 +8,8 @@ import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -33,6 +35,9 @@ class StorePalClient @JvmOverloads constructor(
 ) : StorePalService {
     private val base = baseUrl.toHttpUrl()
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
+    private val inboxMutex = Mutex()
+    private data class InboxSnapshot(val tokens: List<String>, val items: List<ConversationSummary>)
+    @Volatile private var inboxCache: InboxSnapshot? = null
     private val http = OkHttpClient.Builder()
         .callTimeout(30, TimeUnit.SECONDS)
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -67,6 +72,7 @@ class StorePalClient @JvmOverloads constructor(
             put("attachment_ids", json.encodeToJsonElement(kotlinx.serialization.serializer<List<String>>(), attachmentIds))
         }
         val result = request("feedback", body = body.toString().jsonBody())
+        inboxCache = null
         return decode<FeedbackCreated>(result)
             .copy(partialAttachmentFailure = result.error?.code == "PARTIAL_BIND")
     }
@@ -86,15 +92,38 @@ class StorePalClient @JvmOverloads constructor(
         return decode(request("feedback/attachments", body = body))
     }
 
+    @Deprecated("Email lookup is only retained for one-time migration. Use conversation tokens.")
     override suspend fun listConversations(email: String, page: Int): ConversationsPage {
         validateEmail(email)
         require(page > 0) { "Page must be positive." }
         return decode(request("conversations", mapOf("email" to email.trim(), "page" to "$page", "per_page" to "20")))
     }
 
-    override suspend fun getConversation(token: String): ConversationDetail =
-        decode(request(listOf("conversations", validToken(token))))
+    override suspend fun listConversations(tokens: List<String>, page: Int): ConversationsPage = inboxMutex.withLock {
+        require(page > 0) { "Page must be positive." }
+        val uuid = Regex("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+        require(tokens.all { uuid.matches(it) }) { "Use valid conversation tokens." }
+        val normalized = tokens.map { it.lowercase(Locale.ROOT) }.distinct().sorted()
+        if (page == 1 || inboxCache?.tokens != normalized) {
+            val items = normalized.chunked(100).flatMap { batch ->
+                val body = buildJsonObject { put("tokens", json.encodeToJsonElement(kotlinx.serialization.serializer<List<String>>(), batch)) }
+                decode<ConversationsPage>(request("conversations/lookup", body = body.toString().jsonBody()))
+                    .conversations.filter { it.conversationToken.lowercase(Locale.ROOT) in batch }
+            }.distinctBy { it.id }.sortedWith(compareByDescending<ConversationSummary> { it.createdAt }.thenByDescending { it.id })
+            inboxCache = InboxSnapshot(normalized, items)
+        }
+        val items = inboxCache?.items.orEmpty()
+        val offset = minOf(items.size.toLong(), (page.toLong() - 1) * 20).toInt()
+        ConversationsPage(items.drop(offset).take(20), items.size, page, 20)
+    }
 
+    override suspend fun getConversation(token: String): ConversationDetail {
+        val detail = decode<ConversationDetail>(request(listOf("conversations", validToken(token))))
+        inboxCache = null
+        return detail
+    }
+
+    @Deprecated("Use conversation tokens; an email is not proof of identity.")
     override suspend fun getUnreadCount(email: String): Int {
         validateEmail(email)
         return decode<Unread>(request("conversations/unread", mapOf("email" to email.trim()))).unreadCount
@@ -108,6 +137,7 @@ class StorePalClient @JvmOverloads constructor(
             put("attachment_ids", json.encodeToJsonElement(kotlinx.serialization.serializer<List<String>>(), attachmentIds))
         }
         val result = request(listOf("conversations", validToken(token), "reply"), body = body.toString().jsonBody())
+        inboxCache = null
         return decode<Reply>(result).copy(partialAttachmentFailure = result.error?.code == "PARTIAL_BIND")
     }
 
@@ -141,6 +171,7 @@ class StorePalClient @JvmOverloads constructor(
                 .header("Authorization", "Bearer $apiKey")
                 .header("Accept", "application/json")
                 .header("Accept-Language", language())
+                .header("X-StorePal-SDK", "android/0.2.0")
                 .apply { if (body != null) post(body) }.build()
             val response = try {
                 http.newCall(request).await()

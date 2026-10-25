@@ -11,7 +11,7 @@ internal class DemoService(private val context: Context) : StorePalService {
     private val summaries = mutableListOf<ConversationSummary>()
     private val date = "2026-10-25T10:00:00Z"
     init {
-        val token = "example-conversation"
+        val token = "00000000-0000-4000-8000-000000000001"
         summaries += ConversationSummary("example", token, FeedbackCategory.FEATURE,
             context.getString(R.string.sample_feedback), 1, date, true, date)
         conversations[token] = ConversationDetail(FeedbackDetail("example", "Alex", "alex@example.com", FeedbackCategory.FEATURE,
@@ -37,10 +37,17 @@ internal class DemoService(private val context: Context) : StorePalService {
         }
         return ConversationsPage(if (page == 1) items else emptyList(), items.size, page, 20)
     }
+    override suspend fun listConversations(tokens: List<String>, page: Int): ConversationsPage {
+        delay(250)
+        val items = summaries.filter { it.conversationToken in tokens }.map {
+            if (it.id == "example") it.copy(message = context.getString(R.string.sample_feedback)) else it
+        }
+        return ConversationsPage(items.drop((page - 1) * 20).take(20), items.size, page, 20)
+    }
     override suspend fun getConversation(token: String): ConversationDetail {
         delay(200)
         val detail = conversations[token] ?: throw StorePalException("NOT_FOUND", "No conversation.", 404)
-        return if (token == "example-conversation") detail.copy(
+        return if (token == "00000000-0000-4000-8000-000000000001") detail.copy(
             feedback = detail.feedback.copy(message = context.getString(R.string.sample_feedback)),
             replies = detail.replies.map { if (it.id == "reply-1") it.copy(message = context.getString(R.string.sample_response)) else it },
         ) else detail

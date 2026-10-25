@@ -30,9 +30,9 @@
     <string name="sp_refresh">刷新</string>
     <string name="sp_loading">正在加载…</string>
     <string name="sp_load_more">加载更多</string>
-    <string name="sp_inbox_hint">请使用发送反馈时填写的电子邮箱。</string>
+    <string name="sp_inbox_hint">此设备上保存的对话。刷新可查看新回复。</string>
     <string name="sp_empty">暂无会话</string>
-    <string name="sp_empty_detail">使用此邮箱发送的消息会显示在这里。</string>
+    <string name="sp_empty_detail">从此设备发送的反馈会显示在这里。</string>
     <string name="sp_unread">有未读回复</string>
     <plurals name="sp_replies"><item quantity="other">%1$s 条回复</item></plurals>
     <string name="sp_you">你</string>

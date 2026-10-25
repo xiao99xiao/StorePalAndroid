@@ -30,9 +30,9 @@
     <string name="sp_refresh">Refresh</string>
     <string name="sp_loading">Loading…</string>
     <string name="sp_load_more">Load more</string>
-    <string name="sp_inbox_hint">Use the email address you entered when sending feedback.</string>
+    <string name="sp_inbox_hint">Conversations saved on this device. Refresh to check for replies.</string>
     <string name="sp_empty">No conversations yet</string>
-    <string name="sp_empty_detail">Messages sent with this email address will appear here.</string>
+    <string name="sp_empty_detail">Feedback sent from this device will appear here.</string>
     <string name="sp_unread">Unread reply</string>
     <plurals name="sp_replies">
         <item quantity="one">%1$s reply</item>

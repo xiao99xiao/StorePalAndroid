@@ -7,7 +7,7 @@ without migrating their own UI to Compose.
 
 [![Verify SDK](https://github.com/xiao99xiao/StorePalAndroid/actions/workflows/verify.yml/badge.svg)](https://github.com/xiao99xiao/StorePalAndroid/actions/workflows/verify.yml)
 
-**Version 0.1.0** · [Release downloads](https://github.com/xiao99xiao/StorePalAndroid/releases/tag/v0.1.0) · [StorePal](https://storepal.app)
+**Version 0.2.0** · [Release downloads](https://github.com/xiao99xiao/StorePalAndroid/releases/tag/v0.2.0) · [StorePal](https://storepal.app)
 
 ## Install
 
@@ -31,15 +31,15 @@ Then add the SDK to your app module:
 
 ```kotlin
 dependencies {
-    implementation("app.storepal:storepal-android:0.1.0")
+    implementation("app.storepal:storepal-android:0.2.0")
 }
 ```
 
 No GitHub token is required. For your own UI or a JVM client, use
-`app.storepal:storepal-core:0.1.0` instead. The artifacts are hosted in the
+`app.storepal:storepal-core:0.2.0` instead. The artifacts are hosted in the
 StorePal Maven repository; they are not published to Maven Central.
 
-For a quick look, install the [offline example APK](https://github.com/xiao99xiao/StorePalAndroid/releases/download/v0.1.0/storepal-example-0.1.0.apk).
+For a quick look, install the [offline example APK](https://github.com/xiao99xiao/StorePalAndroid/releases/download/v0.2.0/storepal-example-0.2.0.apk).
 
 ## Modules
 
@@ -222,10 +222,10 @@ val feedback = client.submitFeedback(
     message = "The reader closes when I rotate the screen.",
     attachmentIds = listOf(uploaded.attachmentId),
 )
-val inbox = client.listConversations("reader+android@example.com", page = 1)
+val inbox = client.listConversations(savedConversationTokens, page = 1)
 val conversation = client.getConversation(feedback.conversationToken) // marks read
 val reply = client.postReply(feedback.conversationToken, "Here is more context.")
-val unread = client.getUnreadCount("reader+android@example.com")
+val unread = client.getUnreadCount(savedConversationTokens)
 val note = client.getReleaseNote("1.2.0") // null only when no matching release exists
 ```
 
@@ -285,3 +285,15 @@ and locale-resolution suites on an API 35 emulator. Locale checks cover all nine
 languages, Chinese scripts, regional and secondary-language fallback, plural
 counts, localized dates/numbers, and changing the UI language with an unsent draft.
 The Gradle wrapper pins the distribution checksum.
+
+## Upgrading from 0.1.0 to 0.2.0
+
+The inbox and unread checks now use private conversation tokens saved on this device. `POST /api/v1/conversations/lookup` reads summaries without marking threads seen; opening a thread still marks it seen. New installations never discover history from a configured or typed email. Custom `StorePalService` transports must implement the new `listConversations(tokens, page)` overload. Email overloads are deprecated and retained only for migration/source compatibility.
+
+Android 0.1.0 did not persist conversation tokens. For an existing installation with a previously saved email from a successful submission, 0.2.0 imports old history once while the server compatibility window is open. It saves tokens and paging progress before proceeding, so interrupted imports can resume. The import still uses the old email API and shares its known privacy risk during this transition. Once complete, inbox requests use capabilities only. There is no email fallback when capability lookup fails.
+
+If an old installation upgrades only after legacy lookup has been disabled, it keeps capabilities already held but cannot automatically recover email-only history. Reinstalling or switching devices also needs a privately saved support link or separately verified identity. Use `StorePalFeedback.rememberConversation(token)` to restore a link you already hold.
+
+Dismiss SDK UI and call `StorePalFeedback.clearUserData()` on sign-out before configuring another account. This clears conversation access and contact details and prevents pending imports from restoring them. Custom core clients must privately persist each `FeedbackCreated.conversationToken` and pass their saved tokens to inbox/unread methods. Never embed `sp_user_` in an app.
+
+Deploy the server capability endpoint before upgrading client apps. The hosted StorePal API and legacy Supabase base both support it; server legacy compatibility stays enabled until a separate cutoff decision.

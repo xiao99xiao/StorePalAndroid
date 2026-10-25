@@ -11,6 +11,8 @@ import app.storepal.core.StorePalService
 import app.storepal.core.VersionStorage
 import java.security.MessageDigest
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
+import java.util.UUID
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -51,10 +53,14 @@ object StorePalFeedback {
     @JvmStatic
     fun clearUserData() {
         val state = requireRuntime()
-        state.preferences.edit { remove("email"); remove("name") }
+        state.clearHistory()
         state.userEmail = null
         state.userName = null
     }
+
+    /** Restore a privately held conversation link; never pass an account-scoped API token. */
+    @JvmStatic
+    fun rememberConversation(token: String): Boolean = requireRuntime().saveToken(token)
 
     val client: StorePalService get() = requireRuntime().service
 
@@ -114,6 +120,79 @@ internal class StorePalRuntime(
     private val scopeHash = MessageDigest.getInstance("SHA-256").digest(scopeId.toByteArray())
         .take(16).joinToString("") { "%02x".format(it) }
     val preferences = context.getSharedPreferences("storepal_$scopeHash", Context.MODE_PRIVATE)
+    val historyGeneration = AtomicLong(0)
+    private val migrationKey = "tokenInboxMigrationV1"
+    private val migrationEmailKey = "tokenInboxLegacyEmail"
+    private val migrationPageKey = "tokenInboxLegacyPage"
+    init {
+        if (!preferences.contains(migrationKey)) {
+            val oldEmail = preferences.getString("email", null)
+            preferences.edit {
+                putBoolean(migrationKey, oldEmail.isNullOrBlank())
+                if (!oldEmail.isNullOrBlank()) putString(migrationEmailKey, oldEmail)
+            }
+        }
+    }
+
+    private fun canonicalToken(value: String): String? = runCatching {
+        UUID.fromString(value).toString().takeIf { it.equals(value, ignoreCase = true) }
+    }.getOrNull()
+
+    @Synchronized fun tokens(): List<String> = preferences.getStringSet("conversationTokens", emptySet()).orEmpty()
+        .mapNotNull(::canonicalToken).distinct()
+
+    @Synchronized fun saveToken(value: String, generation: Long = historyGeneration.get()): Boolean {
+        if (generation != historyGeneration.get()) return false
+        val token = canonicalToken(value) ?: return false
+        preferences.edit { putStringSet("conversationTokens", (tokens() + token).toSet()) }
+        return true
+    }
+
+    @Synchronized fun clearHistory() {
+        historyGeneration.incrementAndGet()
+        preferences.edit {
+            remove("email"); remove("name"); remove("conversationTokens")
+            remove(migrationEmailKey); remove(migrationPageKey); putBoolean(migrationKey, true)
+        }
+    }
+
+    @Synchronized fun saveSubmission(name: String, email: String, token: String, generation: Long): Boolean {
+        if (!saveToken(token, generation)) return false
+        saveIdentity(name, email)
+        return true
+    }
+
+    @Synchronized private fun finishMigration(generation: Long) {
+        if (generation != historyGeneration.get()) throw CancellationException("Account changed")
+        preferences.edit { putBoolean(migrationKey, true); remove(migrationEmailKey); remove(migrationPageKey) }
+    }
+
+    @Suppress("DEPRECATION")
+    suspend fun inbox(page: Int): app.storepal.core.ConversationsPage {
+        val generation = historyGeneration.get()
+        if (!preferences.getBoolean(migrationKey, true)) {
+            val oldEmail = preferences.getString(migrationEmailKey, null)
+            if (!oldEmail.isNullOrBlank()) {
+                var next = preferences.getInt(migrationPageKey, 1)
+                try {
+                    while (true) {
+                        val result = service.listConversations(oldEmail, next)
+                        if (generation != historyGeneration.get()) throw CancellationException("Account changed")
+                        check(result.page == next && result.perPage > 0) { "Invalid migration response" }
+                        result.conversations.forEach { saveToken(it.conversationToken, generation) }
+                        if (result.conversations.isEmpty() || !result.hasMore) { finishMigration(generation); break }
+                        next++
+                        preferences.edit { putInt(migrationPageKey, next) }
+                    }
+                } catch (error: app.storepal.core.StorePalException) {
+                    if (error.code == "USER_TOKEN_REQUIRED") finishMigration(generation) else throw error
+                }
+            } else finishMigration(generation)
+        }
+        val result = service.listConversations(tokens(), page)
+        if (generation != historyGeneration.get()) throw CancellationException("Account changed")
+        return result
+    }
     val presenting = AtomicBoolean(false)
     val checking = AtomicBoolean(false)
     val tracker = ReleaseVersionTracker(object : VersionStorage {

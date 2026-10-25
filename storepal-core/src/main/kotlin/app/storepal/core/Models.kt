@@ -103,10 +103,23 @@ interface StorePalService {
     suspend fun submitFeedback(name: String, email: String, category: FeedbackCategory, message: String,
         metadata: Map<String, String> = emptyMap(), attachmentIds: List<String> = emptyList()): FeedbackCreated
     suspend fun uploadAttachment(data: ByteArray, fileName: String, mimeType: String): AttachmentUploaded
+    @Deprecated("Email lookup is only retained for one-time migration. Use conversation tokens.")
     suspend fun listConversations(email: String, page: Int = 1): ConversationsPage
+    /** Lists only capabilities held by this installation, without marking any thread seen. */
+    suspend fun listConversations(tokens: List<String>, page: Int = 1): ConversationsPage
     /** Opening a conversation also marks it read on the server. */
     suspend fun getConversation(token: String): ConversationDetail
+    @Deprecated("Use conversation tokens; an email is not proof of identity.")
     suspend fun getUnreadCount(email: String): Int
+    suspend fun getUnreadCount(tokens: List<String>): Int {
+        var page = 1
+        var count = 0
+        do {
+            val result = listConversations(tokens, page++)
+            count += result.conversations.count { it.hasUnreadReply }
+        } while (result.hasMore)
+        return count
+    }
     suspend fun postReply(token: String, message: String, attachmentIds: List<String> = emptyList()): Reply
     suspend fun getReleaseNote(version: String): ReleaseNote?
 }

@@ -89,7 +89,7 @@ private fun FeedbackScreenContent(onClose: () -> Unit, modifier: Modifier) {
                     listOf(R.string.sp_feedback_tab, R.string.sp_conversations).forEachIndexed { index, label ->
                         Tab(selected = tab == index, onClick = {
                             tab = index
-                            if (index == 1 && model.email.isNotBlank() && model.loadedEmail != model.email.trim()) model.loadConversations()
+                            if (index == 1 && !model.inboxLoaded) model.loadConversations()
                         }, enabled = !model.busy && !model.readingFiles, text = { Text(stringResource(label)) })
                     }
                 }
@@ -240,13 +240,12 @@ private fun Inbox(model: FeedbackViewModel) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item { Column(Modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(stringResource(R.string.sp_inbox_hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
-            EmailField(model)
-            OutlinedButton(onClick = { model.loadConversations() }, enabled = validEmail(model.email) && !model.loading) {
+            OutlinedButton(onClick = { model.loadConversations() }, enabled = !model.loading) {
                 Text(stringResource(if (model.page == 0) R.string.sp_load else R.string.sp_refresh))
             }
         } }
         model.inboxError?.let { item { Box(Modifier.padding(horizontal = 24.dp)) { ErrorMessage(it) } } }
-        if (model.loadedEmail == model.email.trim()) {
+        if (model.inboxLoaded) {
             if (model.conversations.isEmpty() && !model.loading && model.inboxError == null) item {
                 Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(stringResource(R.string.sp_empty), style = MaterialTheme.typography.titleMedium)
@@ -263,7 +262,7 @@ private fun Inbox(model: FeedbackViewModel) {
             }
         }
         if (model.loading) item { Loading(Modifier.padding(24.dp)) }
-        if (model.hasMore && model.loadedEmail == model.email.trim()) item {
+        if (model.hasMore && model.inboxLoaded) item {
             TextButton(onClick = { model.loadConversations(false) }, enabled = !model.loading, modifier = Modifier.padding(horizontal = 16.dp)) {
                 Text(stringResource(R.string.sp_load_more))
             }

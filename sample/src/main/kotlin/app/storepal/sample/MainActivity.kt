@@ -17,6 +17,7 @@ class ExampleApplication : Application() {
         super.onCreate()
         if (BuildConfig.STOREPAL_API_KEY.isBlank()) {
             StorePalFeedback.initialize(this, DemoService(this), "offline-example", "alex@example.com", "Alex")
+            StorePalFeedback.rememberConversation("00000000-0000-4000-8000-000000000001")
         } else StorePalFeedback.configure(this, BuildConfig.STOREPAL_API_KEY)
     }
 }

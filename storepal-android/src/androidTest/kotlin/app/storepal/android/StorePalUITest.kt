@@ -18,6 +18,7 @@ class StorePalUITest {
     @Before fun setup() {
         StorePalFeedback.initialize(InstrumentationRegistry.getInstrumentation().targetContext, service,
             "test-${System.nanoTime()}", "alex@example.com", "Alex")
+        StorePalFeedback.rememberConversation("00000000-0000-4000-8000-000000000001")
     }
     private fun feedback() { compose.setContent { StorePalTheme { StorePalFeedbackScreen({}) } } }
     private fun release() { compose.setContent { StorePalTheme { StorePalWhatsNewScreen({}, version = "1.1") } } }
@@ -147,11 +148,14 @@ internal class TestService : StorePalService {
         metadata: Map<String, String>, attachmentIds: List<String>): FeedbackCreated {
         submissions++; lastMetadata = metadata
         submitError?.let { throw it }
-        return FeedbackCreated("f1", "token", category, "today", partial)
+        return FeedbackCreated("f1", "00000000-0000-4000-8000-000000000001", category, "today", partial)
     }
     override suspend fun uploadAttachment(data: ByteArray, fileName: String, mimeType: String) = AttachmentUploaded("a1", fileName, mimeType, data.size.toLong())
     override suspend fun listConversations(email: String, page: Int) = ConversationsPage(
-        listOf(ConversationSummary("f1", "token", FeedbackCategory.BUG, "Original feedback", 1, "today", true, "today")), 1, 1, 20)
+        listOf(ConversationSummary("f1", "00000000-0000-4000-8000-000000000001", FeedbackCategory.BUG, "Original feedback", 1, "today", true, "today")), 1, 1, 20)
+    override suspend fun listConversations(tokens: List<String>, page: Int) = ConversationsPage(
+        if ("00000000-0000-4000-8000-000000000001" in tokens) listOf(ConversationSummary("f1", "00000000-0000-4000-8000-000000000001", FeedbackCategory.BUG, "Original feedback", 1, "today", true, "today")) else emptyList(),
+        if (tokens.isEmpty()) 0 else 1, page, 20)
     override suspend fun getConversation(token: String) = ConversationDetail(
         FeedbackDetail("f1", "Alex", "alex@example.com", FeedbackCategory.BUG, "Original feedback", createdAt = "today"),
         listOf(Reply("r1", "developer", "Developer response", "today")))

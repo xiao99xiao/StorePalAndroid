@@ -30,9 +30,9 @@
     <string name="sp_refresh">Actualizar</string>
     <string name="sp_loading">Cargando…</string>
     <string name="sp_load_more">Cargar más</string>
-    <string name="sp_inbox_hint">Usa el correo electrónico que introdujiste al enviar tus comentarios.</string>
+    <string name="sp_inbox_hint">Conversaciones guardadas en este dispositivo. Actualiza para ver las respuestas.</string>
     <string name="sp_empty">Aún no hay conversaciones</string>
-    <string name="sp_empty_detail">Los mensajes enviados con este correo electrónico aparecerán aquí.</string>
+    <string name="sp_empty_detail">Los comentarios enviados desde este dispositivo aparecerán aquí.</string>
     <string name="sp_unread">Respuesta sin leer</string>
     <plurals name="sp_replies">
         <item quantity="one">%1$s respuesta</item>
