@@ -50,6 +50,7 @@ jobs:
           path: |
             storepal-core/build/reports/
             storepal-android/build/reports/
+            storepal-android/build/outputs/androidTest-results/
             storepal-android/build/outputs/aar/
             sample/build/outputs/apk/debug/
             build/maven-repository/

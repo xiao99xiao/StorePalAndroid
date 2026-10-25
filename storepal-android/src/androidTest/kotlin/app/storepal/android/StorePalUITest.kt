@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import app.storepal.core.*
 import kotlin.test.assertEquals
 import org.junit.Before
@@ -31,6 +32,8 @@ class StorePalUITest {
     }
     private fun typeMessage() {
         tag("feedback_message").performTextInput("A useful feedback message.")
+        closeSoftKeyboard()
+        compose.waitForIdle()
     }
     @Test fun feedbackSubmitsOnceAndShowsSuccess() {
         feedback(); typeMessage()
@@ -48,7 +51,7 @@ class StorePalUITest {
         service.submitError = StorePalException("RATE_LIMITED", "Wait", 429)
         feedback(); typeMessage()
         tag("feedback_send").performClick()
-        waitText("Too many requests. Please wait a minute and try again.")
+        text("Too many requests. Please wait a minute and try again.").assertIsDisplayed()
         tag("feedback_message").assertTextContains("A useful feedback message.")
         service.submitError = null
         tag("feedback_send").performClick()
@@ -68,8 +71,10 @@ class StorePalUITest {
         compose.onNodeWithText("Original feedback").performClick()
         waitText("Developer")
         tag("conversation_reply").performTextInput("Thanks, that helps!")
+        closeSoftKeyboard()
+        compose.waitForIdle()
         text("Send reply").performClick()
-        waitText("Thanks, that helps!")
+        text("Thanks, that helps!").assertIsDisplayed()
         assertEquals(1, service.replies)
     }
     @Test fun cooldownKeepsUnsentReply() {
@@ -80,8 +85,10 @@ class StorePalUITest {
         compose.onNodeWithText("Original feedback").performClick()
         waitText("Developer")
         tag("conversation_reply").performTextInput("My unsent reply")
+        closeSoftKeyboard()
+        compose.waitForIdle()
         text("Send reply").performClick()
-        waitText("Please wait 30 seconds between replies.")
+        text("Please wait 30 seconds between replies.").assertIsDisplayed()
         tag("conversation_reply").assertTextContains("My unsent reply")
     }
     @Test fun missingReleaseCanBeRetried() {

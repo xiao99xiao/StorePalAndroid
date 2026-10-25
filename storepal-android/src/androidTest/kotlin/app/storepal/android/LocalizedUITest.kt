@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 import app.storepal.core.ReleaseNote
@@ -32,6 +33,8 @@ class LocalizedUITest {
         }
         compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasTestTag("feedback_message"))
         compose.onNodeWithTag("feedback_message").performTextInput("A draft kept across language changes.")
+        closeSoftKeyboard()
+        compose.waitForIdle()
         listOf("zh-Hans", "zh-Hant", "ja", "ko", "fr", "de", "es", "pt", "en").forEach { language ->
             compose.runOnIdle { tag.value = language }
             val configuration = Configuration(compose.activity.resources.configuration).apply { setLocale(Locale.forLanguageTag(language)) }
