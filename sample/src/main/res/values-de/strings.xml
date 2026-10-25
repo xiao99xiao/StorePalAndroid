@@ -1,0 +1,8 @@
+<resources>
+    <string name="sample_app_name">StorePal-Beispiel</string>
+    <string name="sample_offline">Offline-Demo · Nachrichten bleiben auf diesem Gerät und werden beim Neustart der App zurückgesetzt.</string>
+    <string name="sample_connected">Mit deiner StorePal-App verbunden.</string>
+    <string name="sample_feedback">Könntet ihr einen Lesemodus hinzufügen? Bei längeren Artikeln wäre das hilfreich.</string>
+    <string name="sample_response">Danke für die Idee! Der Lesemodus ist in diesem Update enthalten. Sag uns gerne, wie er dir gefällt.</string>
+    <string name="sample_release">## Mehr Raum zum Lesen\n\nEntspannter lesen und einfacher in Kontakt bleiben.\n\n- Der **Lesemodus** macht längere Artikel angenehmer zu lesen.\n- **Sende Feedback** mit Screenshots und Dateien, ohne die App zu verlassen.\n- Unter **Meine Nachrichten** findest du alle Antworten an einem Ort.\n\n### Gemeinsam wird die App besser\n\nDanke für deine durchdachten Vorschläge. Dein Feedback hilft uns bei der Entscheidung, was wir als Nächstes verbessern.</string>
+</resources>

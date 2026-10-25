@@ -1,0 +1,8 @@
+<resources>
+    <string name="sample_app_name">StorePal 範例</string>
+    <string name="sample_offline">離線示範 · 訊息僅保存在此裝置中，應用程式重新啟動後會重設。</string>
+    <string name="sample_connected">已連接到你的 StorePal 應用程式。</string>
+    <string name="sample_feedback">可以新增閱讀模式嗎？閱讀長文章時會很有幫助。</string>
+    <string name="sample_response">感謝你的建議！這次更新已經加入閱讀模式，歡迎告訴我們你的使用感受。</string>
+    <string name="sample_release">## 給閱讀多一點空間\n\n更舒適的閱讀體驗，更方便的交流方式。\n\n- **閱讀模式**讓長文章更容易閱讀。\n- **傳送回饋**不必離開應用程式，還能附上截圖和檔案。\n- **我的對話**集中保存每一則回覆。\n\n### 一起讓應用程式變得更好\n\n感謝每一條用心的建議。你的回饋幫助我們決定下一步的改進方向。</string>
+</resources>

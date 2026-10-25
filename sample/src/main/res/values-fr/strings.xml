@@ -1,0 +1,8 @@
+<resources>
+    <string name="sample_app_name">Exemple StorePal</string>
+    <string name="sample_offline">Démo hors ligne · Les messages restent sur cet appareil et sont effacés au redémarrage de l’application.</string>
+    <string name="sample_connected">Connecté à votre application StorePal.</string>
+    <string name="sample_feedback">Pourriez-vous ajouter un mode lecture ? Ce serait pratique pour les longs articles.</string>
+    <string name="sample_response">Merci pour cette idée ! Le mode lecture est inclus dans cette mise à jour. Dites-nous ce que vous en pensez.</string>
+    <string name="sample_release">## Plus de place pour la lecture\n\nUne lecture plus sereine et des échanges plus simples.\n\n- Le **mode lecture** rend les longs articles plus agréables à lire.\n- **Envoyez un avis** sans quitter l’application, avec des captures d’écran et des fichiers.\n- **Mes échanges** rassemble toutes les réponses au même endroit.\n\n### Une application qui s’améliore avec vous\n\nMerci pour toutes vos suggestions. Vos avis nous aident à choisir les prochaines améliorations.</string>
+</resources>

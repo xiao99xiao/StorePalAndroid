@@ -1,0 +1,8 @@
+<resources>
+    <string name="sample_app_name">StorePal Example</string>
+    <string name="sample_offline">Offline demo · Messages stay on this device and reset when the app restarts.</string>
+    <string name="sample_connected">Connected to your StorePal app.</string>
+    <string name="sample_feedback">Could you add a reading mode? It would help on longer articles.</string>
+    <string name="sample_response">Thanks for the idea! Reading mode is included in this update. Let us know how it feels.</string>
+    <string name="sample_release">## A little more room to read\n\nA calmer reading experience, and a simpler way to stay in touch.\n\n- **Reading mode** gives longer articles room to breathe.\n- **Send feedback** without leaving the app, with screenshots and files.\n- **Your conversations** keep every reply in one place.\n\n### Made better together\n\nThank you for every thoughtful suggestion. Your feedback helps shape what comes next.</string>
+</resources>

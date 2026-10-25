@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <activity
+            android:name=".StorePalActivity"
+            android:exported="false"
+            android:theme="@style/StorePalTheme"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+</manifest>

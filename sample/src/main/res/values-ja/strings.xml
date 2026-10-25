@@ -1,0 +1,8 @@
+<resources>
+    <string name="sample_app_name">StorePal サンプル</string>
+    <string name="sample_offline">オフラインデモ · メッセージはこの端末にのみ保存され、アプリの再起動時にリセットされます。</string>
+    <string name="sample_connected">StorePalアプリに接続しています。</string>
+    <string name="sample_feedback">リーディングモードを追加してもらえますか？長い記事を読むときに助かります。</string>
+    <string name="sample_response">ご提案ありがとうございます！今回のアップデートでリーディングモードを追加しました。使い心地をぜひお聞かせください。</string>
+    <string name="sample_release">## もっと読みやすく\n\n落ち着いた読書体験と、より手軽なフィードバックをお届けします。\n\n- **リーディングモード**で長い記事も快適に読めます。\n- **フィードバック**はアプリを離れずに送信。スクリーンショットやファイルも添付できます。\n- **やり取り**で開発者との返信をまとめて確認できます。\n\n### 一緒に、もっと良いアプリへ\n\nいつも丁寧なご意見をありがとうございます。皆さまの声が、次の改善につながっています。</string>
+</resources>

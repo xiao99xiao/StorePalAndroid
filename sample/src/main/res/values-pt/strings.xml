@@ -1,0 +1,8 @@
+<resources>
+    <string name="sample_app_name">Exemplo do StorePal</string>
+    <string name="sample_offline">Demo offline · As mensagens ficam apenas neste dispositivo e são apagadas quando o app é reiniciado.</string>
+    <string name="sample_connected">Conectado ao seu app do StorePal.</string>
+    <string name="sample_feedback">Vocês poderiam adicionar um modo de leitura? Seria útil para artigos mais longos.</string>
+    <string name="sample_response">Agradecemos a ideia! O modo de leitura já está nesta atualização. Conte para nós o que achou.</string>
+    <string name="sample_release">## Mais espaço para ler\n\nUma leitura mais tranquila e uma forma mais simples de manter contato.\n\n- O **modo de leitura** deixa os artigos longos mais agradáveis.\n- **Envie feedback** sem sair do app, com capturas de tela e arquivos.\n- **Minhas conversas** reúne todas as respostas em um só lugar.\n\n### Melhoramos juntos\n\nAgradecemos cada sugestão. Seu feedback nos ajuda a escolher as próximas melhorias.</string>
+</resources>
