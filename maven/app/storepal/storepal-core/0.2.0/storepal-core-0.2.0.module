@@ -1,0 +1,130 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "app.storepal",
+    "module": "storepal-core",
+    "version": "0.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.13"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "storepal-core-0.2.0.jar",
+          "url": "storepal-core-0.2.0.jar",
+          "size": 131934,
+          "sha512": "3012f53b74b932b79de5b2118535bbc4452d988e5c7f4e10aab7d59bad495ab8fc2967191d7c39919b4acd0fbe3fec8173e1926098d80cf324a5359fd7e0c2d1",
+          "sha256": "a14f354a8473d19e5da701dee16b9ebc72d58e9fe81907c3f6f18db937ce3541",
+          "sha1": "4307abeb6e11b2071e395a0bff30782b05b416b7",
+          "md5": "dec7de1cdc4d67ce78ad8f6e9f058678"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.9.0"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "4.12.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "storepal-core-0.2.0.jar",
+          "url": "storepal-core-0.2.0.jar",
+          "size": 131934,
+          "sha512": "3012f53b74b932b79de5b2118535bbc4452d988e5c7f4e10aab7d59bad495ab8fc2967191d7c39919b4acd0fbe3fec8173e1926098d80cf324a5359fd7e0c2d1",
+          "sha256": "a14f354a8473d19e5da701dee16b9ebc72d58e9fe81907c3f6f18db937ce3541",
+          "sha1": "4307abeb6e11b2071e395a0bff30782b05b416b7",
+          "md5": "dec7de1cdc4d67ce78ad8f6e9f058678"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "storepal-core-0.2.0-sources.jar",
+          "url": "storepal-core-0.2.0-sources.jar",
+          "size": 7174,
+          "sha512": "d9a380b5499bac3888e9ed7e092c37f8ca803fc4bc23614d9f313bc77af14c9086cb036d5028969172588b557005d1e9c198888bbfde51892ad3b146d51f0c0b",
+          "sha256": "18565f55cd936899923517bb5805ce80c3f0ae9c7a2cc1d9aeb36824a21b59b2",
+          "sha1": "0a674e2fa74c58ab00489a0f5c31e4b4f0c804c7",
+          "md5": "ecc8fa51cec1bf806f794956d4825569"
+        }
+      ]
+    }
+  ]
+}

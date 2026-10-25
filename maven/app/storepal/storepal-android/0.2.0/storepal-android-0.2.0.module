@@ -1,0 +1,175 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "app.storepal",
+    "module": "storepal-android",
+    "version": "0.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.13"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "app.storepal",
+          "module": "storepal-core",
+          "version": {
+            "requires": "0.2.0"
+          }
+        },
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom",
+          "version": {
+            "requires": "2025.10.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "androidx.compose.material3",
+          "module": "material3"
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "storepal-android-0.2.0.aar",
+          "url": "storepal-android-0.2.0.aar",
+          "size": 201502,
+          "sha512": "dcc4adbe182d291820b2920178e43d405640e11edcb125410f6a0f436050a39bda4f3bfe750cc741edfb2c42f46451657e3ceccd3f918a205239173de86143be",
+          "sha256": "5067457145c2d70200c815d621f34218de10e604ea6915d98cbb22aea3628a56",
+          "sha1": "2b4318d3c593194bcc745ea7a59161a0a85108cd",
+          "md5": "82ef1c939db57395c8f7b693e25a5c8d"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.activity",
+          "module": "activity-compose",
+          "version": {
+            "requires": "1.10.1"
+          }
+        },
+        {
+          "group": "androidx.lifecycle",
+          "module": "lifecycle-viewmodel-compose",
+          "version": {
+            "requires": "2.9.4"
+          }
+        },
+        {
+          "group": "androidx.lifecycle",
+          "module": "lifecycle-runtime-compose",
+          "version": {
+            "requires": "2.9.4"
+          }
+        },
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.16.0"
+          }
+        },
+        {
+          "group": "io.noties.markwon",
+          "module": "core",
+          "version": {
+            "requires": "4.6.2"
+          }
+        },
+        {
+          "group": "app.storepal",
+          "module": "storepal-core",
+          "version": {
+            "requires": "0.2.0"
+          }
+        },
+        {
+          "group": "androidx.compose",
+          "module": "compose-bom",
+          "version": {
+            "requires": "2025.10.01"
+          },
+          "attributes": {
+            "org.gradle.category": "platform"
+          },
+          "endorseStrictVersions": true
+        },
+        {
+          "group": "androidx.compose.material3",
+          "module": "material3"
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "storepal-android-0.2.0.aar",
+          "url": "storepal-android-0.2.0.aar",
+          "size": 201502,
+          "sha512": "dcc4adbe182d291820b2920178e43d405640e11edcb125410f6a0f436050a39bda4f3bfe750cc741edfb2c42f46451657e3ceccd3f918a205239173de86143be",
+          "sha256": "5067457145c2d70200c815d621f34218de10e604ea6915d98cbb22aea3628a56",
+          "sha1": "2b4318d3c593194bcc745ea7a59161a0a85108cd",
+          "md5": "82ef1c939db57395c8f7b693e25a5c8d"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseSourcePublication",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "storepal-android-0.2.0-sources.jar",
+          "url": "storepal-android-0.2.0-sources.jar",
+          "size": 16175,
+          "sha512": "ef2088691b1fc3aefa2074a20ae41e3577d1a446c8083450132a5461733f63d42b2a5ce2d153f0963747efdb6643cc89f3ae0d6f566703ed4abb7a26d4404350",
+          "sha256": "424ee9ebe5ed3c014fe2ca464ec4700961014988bf345affb70037c0bf5ac602",
+          "sha1": "a5cfaa37acf2036b19b6ae3456b749e591dcfe53",
+          "md5": "0db852dba4be5df9570996722138cd15"
+        }
+      ]
+    }
+  ]
+}
